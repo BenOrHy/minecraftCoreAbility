@@ -48,7 +48,7 @@ public class undeadInventory extends absInventory {
     protected Component getName(Player player, String skill) {
 
         return switch (skill) {
-            case "main" -> Component.text("");
+            case "main" -> Component.text("UNDEAD");
             case "R" -> Component.text("DeadlyWeapons");
             case "Q" -> Component.text("LethalAssure");
             case "F" -> Component.text("RESTORATION");

@@ -9,14 +9,8 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.event.entity.*;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
@@ -182,6 +176,35 @@ public class undeadCore extends absCore {
         if (!contains(player)) return;
 
         event.setFoodLevel(0);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, PotionEffect.INFINITE_DURATION, 0, false, false));
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPotionEffectRemove(EntityPotionEffectEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (!contains(player)) return;
+
+        if (event.getOldEffect() != null && event.getOldEffect().getType().equals(PotionEffectType.HUNGER)) {
+            EntityPotionEffectEvent.Action action = event.getAction();
+            if (action == EntityPotionEffectEvent.Action.CLEARED || action == EntityPotionEffectEvent.Action.REMOVED) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onItemConsume(PlayerItemConsumeEvent event) {
+        Player player = event.getPlayer();
+        if (!contains(player)) return;
+
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            if (player.isValid() && contains(player)) {
+                player.setFoodLevel(0);
+                if (!player.hasPotionEffect(PotionEffectType.HUNGER)) {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, PotionEffect.INFINITE_DURATION, 0, false, false));
+                }
+            }
+        }, 1L);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -334,7 +357,7 @@ public class undeadCore extends absCore {
     }
 
     private boolean isUndeadOrAir(Material material) {
-        return material == Material.AIR || isUndeadWeapon(material);
+        return isUndeadWeapon(material) || material == Material.AIR;
     }
 
     private boolean hasProperItems(Player player) {

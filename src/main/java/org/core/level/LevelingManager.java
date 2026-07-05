@@ -195,7 +195,7 @@ public class LevelingManager implements Listener {
                 case "CHARLOTTE":
                     charLeveling charlotte = new charLeveling(plugin, player, exp);
                     charlotte.addExp(player);
-                case "Undead":
+                case "UNDEAD":
                     undeadLeveling undead = new undeadLeveling(plugin, player, exp);
                     undead.addExp(player);
                 default :

@@ -1,7 +1,7 @@
 name: Core
 version: '2.0'
 main: org.core.main.Core
-api-version: '1.21.11'
+api-version: '26.1.2'
 commands:
   core:
     description: "능력 설정"

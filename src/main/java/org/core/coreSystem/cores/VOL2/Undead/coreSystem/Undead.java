@@ -31,7 +31,6 @@ public class Undead {
 
     //R
     public double r_Skill_amp = 0.2;
-    public double r_Skill_Damage = 0;
     public long r_Skill_Cool = 13000;
     public long r_Skill_Cool_re = 4000L;
 

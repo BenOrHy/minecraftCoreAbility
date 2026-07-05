@@ -101,6 +101,9 @@ public class R_scythe implements SkillBase {
                 .withDirectEntity(player)
                 .build();
 
+        Invulnerable invulnerable = new Invulnerable(player, 400);
+        invulnerable.applyEffect(player);
+
         Vector backDash = player.getLocation().getDirection().setY(0).normalize().multiply(-1.3);
         player.setVelocity(backDash);
 
