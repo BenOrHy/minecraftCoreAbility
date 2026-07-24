@@ -62,6 +62,7 @@ public class cmdCore implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        this.config.clearPlayerCore(target);
         this.config.setSetting(target, setting, value);
         level.levelScoreBoard(target);
         sender.sendMessage("§a" + target.getName() + "의 " + setting + " 값을 " + value + "로 설정했습니다.");

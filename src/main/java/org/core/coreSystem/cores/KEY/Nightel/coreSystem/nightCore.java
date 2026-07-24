@@ -102,6 +102,7 @@ public class nightCore extends absCore {
 
     @EventHandler
     public void onEnvironmentalDamage(EntityDamageEvent event) {
+        if (event.getCause() == EntityDamageEvent.DamageCause.THORNS) return;
         if (!(event.getEntity() instanceof Player)) return;
 
         Player player = (Player) event.getEntity();

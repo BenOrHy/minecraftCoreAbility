@@ -219,6 +219,7 @@ public class benzCore extends absCore {
 
     @EventHandler(priority = EventPriority.LOW)
     public void passiveEffect(EntityDamageByEntityEvent event) {
+        if (event.getCause() == EntityDamageEvent.DamageCause.THORNS) return;
         if (!(event.getDamager() instanceof Player player)) return;
         if (!(event.getEntity() instanceof LivingEntity target)) return;
 

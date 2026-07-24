@@ -209,8 +209,17 @@ public class EntityLevelingManager implements Listener {
 
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event) {
-        if (!(event.getDamager() instanceof LivingEntity attacker)) return;
-        if (attacker instanceof Player) return;
+        LivingEntity attacker = null;
+
+        if (event.getDamager() instanceof LivingEntity livingDamager) {
+            attacker = livingDamager;
+        }
+        else if (event.getDamager() instanceof Projectile projectile && projectile.getShooter() instanceof LivingEntity shooter) {
+            attacker = shooter;
+        }
+
+        if (attacker == null || attacker instanceof Player) return;
+
         PersistentDataContainer data = attacker.getPersistentDataContainer();
         if (!data.has(levelKey, PersistentDataType.INTEGER)) return;
 
@@ -221,9 +230,9 @@ public class EntityLevelingManager implements Listener {
 
         double p = (0.005 * level * level + 0.055 * level);
         double originalDamage = event.getDamage();
-        double amplifiedDamage = (originalDamage * (1 + p) >= 20)
-                ? originalDamage * (1 + p)
-                : originalDamage * (1 + p) * 1.33;
+
+        double lowDamageBonus = (originalDamage >= 20) ? 1.0 : (1.0 + (0.033 * level));
+        double amplifiedDamage = originalDamage * (1 + p) * lowDamageBonus;
 
         event.setDamage(amplifiedDamage);
     }
@@ -242,7 +251,8 @@ public class EntityLevelingManager implements Listener {
 
         int level = data.get(levelKey, PersistentDataType.INTEGER);
         int baseExp = event.getDroppedExp();
-        event.setDroppedExp((int) (baseExp * (1 + (Math.pow(level, 1.5f) * 1/3))));
+        // 💡 연산자 우선순위에 따른 정수 나눗셈(1/3 = 0) 오버플로 및 버그 방지를 위해 1.0 / 3.0으로 명시적 변경
+        event.setDroppedExp((int) (baseExp * (1 + (Math.pow(level, 1.5f) * (1.0 / 3.0)))));
     }
 
     private void startNameTagUpdater() {

@@ -177,6 +177,9 @@ public class bambCore extends absCore {
 
     @EventHandler
     public void passiveEffect(EntityDamageByEntityEvent event) {
+
+        if (event.getCause() == EntityDamageEvent.DamageCause.THORNS) return;
+
         if (!(event.getDamager() instanceof Player player)) return;
         if (!(event.getEntity() instanceof LivingEntity target)) return;
 

@@ -38,7 +38,7 @@ public class Invulnerable implements Effects, Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (!player.isOnline()) {
+                if (!player.isOnline() || !player.isValid() || !player.isInvulnerable()) {
                     removeEffect(player);
                     cancel();
                     return;
@@ -46,7 +46,7 @@ public class Invulnerable implements Effects, Listener {
 
                 long maxEndTime = invulnerablePlayers.getOrDefault(entity, 0L);
 
-                if (System.currentTimeMillis() >= maxEndTime) {
+                if (System.currentTimeMillis() >= maxEndTime || !player.isInvulnerable()) {
                     removeEffect(player);
                     cancel();
                 }

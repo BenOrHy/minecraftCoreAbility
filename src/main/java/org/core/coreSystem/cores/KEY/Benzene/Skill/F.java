@@ -20,6 +20,7 @@ import org.core.effect.crowdControl.Invulnerable;
 import org.core.coreSystem.cores.KEY.Benzene.Passive.chainResonance;
 import org.core.coreSystem.cores.KEY.Benzene.coreSystem.Benzene;
 import org.core.coreSystem.absCoreSystem.SkillBase;
+import org.core.effect.crowdControl.Stun;
 
 import java.util.*;
 
@@ -75,7 +76,7 @@ public class F implements SkillBase {
                 .withDirectEntity(player)
                 .build();
 
-        Entity initialTarget = getTargetedEntity(player, 5.0, 0.3);
+        Entity initialTarget = getTargetedEntityBreakInv(player, 5.0, 0.3);
         Location eyeLoc = player.getEyeLocation();
         Location origin = eyeLoc.clone().add(0, -0.6, 0);
 
@@ -90,6 +91,15 @@ public class F implements SkillBase {
             world.spawnParticle(Particle.ENCHANTED_HIT, initialTarget.getLocation().add(0, 1, 0), 22, 0.6, 0, 0.6, 1);
             if (!initialTarget.isDead()) {
                 chainResonance.increase(player, initialTarget);
+
+                if (Invulnerable.invulnerablePlayers.containsKey(initialTarget) || initialTarget.isInvulnerable()) {
+                    Invulnerable.invulnerablePlayers.remove(initialTarget);
+                    initialTarget.setInvulnerable(false);
+                }
+
+                Stun stun = new Stun(initialTarget, 200L);
+                stun.applyEffect(player);
+
                 if (initialTarget.isDead()) chainResonance.decrease(initialTarget.getUniqueId());
             }
         }
@@ -182,8 +192,18 @@ public class F implements SkillBase {
                 int chainNum = config.chainRes.getOrDefault(player.getUniqueId(), new LinkedHashMap<>()).size();
                 config.damaged_2.remove(player.getUniqueId());
 
-                if (target != null && target.isValid() && !target.isDead() && chainNum >= 2) {
-                    Special_Attack(player, player.getLocation(), player.getGameMode(), target, chainNum);
+                if (target instanceof LivingEntity livingTarget && livingTarget.isValid() && !livingTarget.isDead()) {
+                    long additionalStunTime = 150L * chainNum;
+
+                    if (Stun.isStunned(livingTarget)) {
+                        Stun.stunnedEntities.put(livingTarget.getUniqueId(), System.currentTimeMillis() + additionalStunTime);
+                    } else {
+                        new Stun(livingTarget, additionalStunTime).applyEffect(player);
+                    }
+
+                    if (chainNum >= 2) {
+                        Special_Attack(player, player.getLocation(), player.getGameMode(), target, chainNum);
+                    }
                 }
 
                 if (config.blockBreak.getOrDefault(player.getUniqueId(), false)) {
@@ -214,7 +234,7 @@ public class F implements SkillBase {
         block.breakNaturally(new ItemStack(Material.IRON_SWORD));
     }
 
-    public static LivingEntity getTargetedEntity(Player player, double range, double raySize) {
+    public static LivingEntity getTargetedEntityBreakInv(Player player, double range, double raySize) {
         World world = player.getWorld();
         Location eyeLocation = player.getEyeLocation();
         Vector direction = eyeLocation.getDirection();
@@ -223,6 +243,7 @@ public class F implements SkillBase {
                 e -> e instanceof LivingEntity && !e.equals(player));
 
         if (result != null && result.getHitEntity() instanceof LivingEntity target) {
+
             return target;
         }
         return null;
@@ -240,12 +261,14 @@ public class F implements SkillBase {
 
         config.fskill_using.put(player.getUniqueId(), true);
 
+        Location targetLoc = entity.getLocation().clone();
+
         new BukkitRunnable() {
             int tick = 0;
 
             @Override
             public void run() {
-                if (tick >= chainNum || player.isDead() || !entity.isValid() || entity.isDead()) {
+                if (tick >= chainNum || player.isDead()) {
                     config.damaged_2.remove(player.getUniqueId());
                     config.fskill_using.remove(player.getUniqueId());
 
@@ -259,7 +282,7 @@ public class F implements SkillBase {
                     return;
                 }
 
-                teleportBehind(player, playerGameMode, entity, -5.0);
+                teleportBehind(player, playerGameMode, targetLoc, -5.0);
 
                 world.playSound(player.getLocation(), Sound.ENTITY_WITHER_SHOOT, 1, 1);
                 world.spawnParticle(Particle.ENCHANTED_HIT, entity.getLocation().clone().add(0, 1.2, 0), 22, 0.6, 0.6, 0.6, 1);
@@ -381,16 +404,15 @@ public class F implements SkillBase {
         }.runTaskTimer(plugin, 0L, 1L);
     }
 
-    public static void teleportBehind(Player player, GameMode playerGameMode, Entity target, double distance) {
-        Location enemyLocation = target.getLocation();
+    public static void teleportBehind(Player player, GameMode playerGameMode, Location targetLocation, double distance) {
         Location playerLocation = player.getLocation();
 
-        Vector directionToPlayer = playerLocation.toVector().subtract(enemyLocation.toVector()).normalize();
+        Vector directionToPlayer = playerLocation.toVector().subtract(targetLocation.toVector()).normalize();
 
-        Location teleportLocation = enemyLocation.clone().add(directionToPlayer.multiply(distance));
-        teleportLocation.setY(enemyLocation.getY());
+        Location teleportLocation = targetLocation.clone().add(directionToPlayer.multiply(distance));
+        teleportLocation.setY(targetLocation.getY());
 
-        float yaw = getYawToFace(teleportLocation, enemyLocation);
+        float yaw = getYawToFace(teleportLocation, targetLocation);
         teleportLocation.setYaw(yaw);
 
         player.teleport(teleportLocation);
