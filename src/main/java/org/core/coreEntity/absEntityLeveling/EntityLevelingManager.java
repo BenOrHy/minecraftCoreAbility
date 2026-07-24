@@ -251,7 +251,6 @@ public class EntityLevelingManager implements Listener {
 
         int level = data.get(levelKey, PersistentDataType.INTEGER);
         int baseExp = event.getDroppedExp();
-        // 💡 연산자 우선순위에 따른 정수 나눗셈(1/3 = 0) 오버플로 및 버그 방지를 위해 1.0 / 3.0으로 명시적 변경
         event.setDroppedExp((int) (baseExp * (1 + (Math.pow(level, 1.5f) * (1.0 / 3.0)))));
     }
 
