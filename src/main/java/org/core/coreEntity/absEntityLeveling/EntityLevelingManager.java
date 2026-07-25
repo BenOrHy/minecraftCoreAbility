@@ -125,8 +125,10 @@ public class EntityLevelingManager implements Listener {
                     double baseHealth = healthAttr.getBaseValue();
                     double p = (0.005 * level * level + 0.055 * level) * 1.44;
                     double newHealth = baseHealth * (1 + p);
+
                     healthAttr.setBaseValue(newHealth);
-                    entity.setHealth(newHealth);
+                    // 💡 우두머리 좀비 등의 AttributeModifier(추가 체력 변동 수치)가 모두 합산된 최종 최대 체력(getValue)으로 만피 동기화
+                    entity.setHealth(healthAttr.getValue());
                 }
             }
 
@@ -211,6 +213,7 @@ public class EntityLevelingManager implements Listener {
     public void onEntityDamage(EntityDamageByEntityEvent event) {
         LivingEntity attacker = null;
 
+        // 근접 공격 및 화살/화염구 등 원거리 투사체 발사자 추적
         if (event.getDamager() instanceof LivingEntity livingDamager) {
             attacker = livingDamager;
         }
