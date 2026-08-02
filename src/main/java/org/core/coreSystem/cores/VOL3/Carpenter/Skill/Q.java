@@ -139,5 +139,4 @@ public class Q implements SkillBase {
 
         config.q_damaged.remove(player.getUniqueId());
     }
-
 }

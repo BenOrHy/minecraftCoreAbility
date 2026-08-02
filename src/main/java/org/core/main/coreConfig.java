@@ -52,6 +52,7 @@ public class coreConfig {
     public Set<Player> Charlotte;
     public Set<Player> Undead;
     public Set<Player> Cheshire;
+    public Set<Player> Jester;
 
     public coreConfig(JavaPlugin plugin, Cool cool) {
         this.plugin = plugin;
@@ -82,6 +83,7 @@ public class coreConfig {
         this.Charlotte = new persistentPlayerSet(plugin, "setting_charlotte");
         this.Undead = new persistentPlayerSet(plugin, "setting_undead");
         this.Cheshire = new persistentPlayerSet(plugin, "setting_cheshire");
+        this.Jester = new persistentPlayerSet(plugin, "setting_jester");
     }
 
     public void registerCore(String name, absCore core) {
@@ -114,6 +116,7 @@ public class coreConfig {
         if (Charlotte.contains(player)) return "CHARLOTTE";
         if (Undead.contains(player)) return "UNDEAD";
         if (Cheshire.contains(player)) return "CHESHIRE";
+        if (Jester.contains(player)) return "JESTER";
         return "NONE";
     }
 
@@ -158,6 +161,7 @@ public class coreConfig {
         player.getPersistentDataContainer().set(new NamespacedKey(plugin, "setting_charlotte"), PersistentDataType.BYTE, (byte) 0);
         player.getPersistentDataContainer().set(new NamespacedKey(plugin, "setting_undead"), PersistentDataType.BYTE, (byte) 0);
         player.getPersistentDataContainer().set(new NamespacedKey(plugin, "setting_cheshire"), PersistentDataType.BYTE, (byte) 0);
+        player.getPersistentDataContainer().set(new NamespacedKey(plugin, "setting_jester"), PersistentDataType.BYTE, (byte) 0);
     }
 
     public void setSetting(Player player, String setting, boolean value) {
@@ -212,6 +216,7 @@ public class coreConfig {
             case "charlotte" -> new NamespacedKey(plugin, "setting_charlotte");
             case "undead" -> new NamespacedKey(plugin, "setting_undead");
             case "cheshire" -> new NamespacedKey(plugin, "setting_cheshire");
+            case "jester" -> new NamespacedKey(plugin, "setting_jester");
             default -> null;
         };
     }

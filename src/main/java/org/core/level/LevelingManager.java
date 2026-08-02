@@ -20,6 +20,7 @@ import org.core.coreSystem.cores.KEY.PLAYER.coreSystem.playerLeveling;
 import org.core.coreSystem.cores.VOL2.Undead.coreSystem.undeadLeveling;
 import org.core.coreSystem.cores.VOL3.Charlotte.coreSystem.charLeveling;
 import org.core.coreSystem.cores.VOL3.Darmes.coreSystem.darmesLeveling;
+import org.core.coreSystem.cores.VOL3.Jester.coreSystem.jestLeveling;
 import org.core.coreSystem.cores.VOL3.Lavender.coreSystem.lavLeveling;
 import org.core.coreSystem.cores.VOL2.Rose.coreSystem.roseLeveling;
 import org.core.coreSystem.cores.VOL3.Residue.coreSystem.residueLeveling;
@@ -198,6 +199,9 @@ public class LevelingManager implements Listener {
                 case "UNDEAD":
                     undeadLeveling undead = new undeadLeveling(plugin, player, exp);
                     undead.addExp(player);
+                case "JESTER":
+                    jestLeveling jester = new jestLeveling(plugin, player, exp);
+                    jester.addExp(player);
                 default :
                     break;
             }

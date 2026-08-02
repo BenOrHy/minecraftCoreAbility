@@ -124,7 +124,8 @@ public abstract class absCore implements Listener {
         Player player = event.getPlayer();
         ItemStack main = player.getInventory().getItemInMainHand();
 
-        if (main.getType() == Material.IRON_SPEAR || main.getType() == Material.MACE) return;
+        if (main.getType() == Material.IRON_SPEAR || main.getType() == Material.MACE
+                || main.getType() == Material.SHIELD || main.getType() == Material.TRIDENT || main.getType() == Material.FIREWORK_ROCKET || main.getType() == Material.EGG) return;
 
         if (!contains(player) || !isItemRequired(player) || Stun.isStunned(player)) return;
 

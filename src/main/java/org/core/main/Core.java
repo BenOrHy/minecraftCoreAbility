@@ -20,6 +20,9 @@ import org.core.coreSystem.cores.VOL3.Charlotte.coreSystem.charInventory;
 import org.core.coreSystem.cores.VOL3.Darmes.coreSystem.Darmes;
 import org.core.coreSystem.cores.VOL3.Darmes.coreSystem.darmesCore;
 import org.core.coreSystem.cores.VOL3.Darmes.coreSystem.darmesInventory;
+import org.core.coreSystem.cores.VOL3.Jester.coreSystem.Jester;
+import org.core.coreSystem.cores.VOL3.Jester.coreSystem.jestCore;
+import org.core.coreSystem.cores.VOL3.Jester.coreSystem.jestInventory;
 import org.core.coreSystem.cores.VOL3.Residue.coreSystem.Residue;
 import org.core.coreSystem.cores.VOL3.Residue.coreSystem.residueCore;
 import org.core.coreSystem.cores.VOL3.Residue.coreSystem.residueInventory;
@@ -126,6 +129,7 @@ public final class Core extends JavaPlugin implements Listener {
     private darmesCore darmes;
     private charCore charlotte;
     private undeadCore undead;
+    private jestCore jester;
 
     private playerInventory playerInv;
     private nightInventory nightInv;
@@ -151,6 +155,7 @@ public final class Core extends JavaPlugin implements Listener {
     private darmesInventory darmesInv;
     private charInventory charInv;
     private undeadInventory undeadInv;
+    private jestInventory jestInv;
 
     private EntityLevelingManager Elevel;
 
@@ -191,6 +196,7 @@ public final class Core extends JavaPlugin implements Listener {
         Darmes darmesConfig = new Darmes();
         Charlotte charConfig = new Charlotte();
         Undead undeadConfig = new Undead();
+        Jester jestConfig = new Jester();
 
         this.cool = new Cool(this);
 
@@ -361,6 +367,13 @@ public final class Core extends JavaPlugin implements Listener {
 
         this.undeadInv = new undeadInventory(this, this.config);
         Bukkit.getPluginManager().registerEvents(this.undeadInv, this);
+
+        this.jester = new jestCore(this, this.config, jestConfig, cool);
+        Bukkit.getPluginManager().registerEvents(this.jester, this);
+        this.config.registerCore("jester", this.undead);
+
+        this.jestInv = new jestInventory(this, this.config);
+        Bukkit.getPluginManager().registerEvents(this.jestInv, this);
 
         this.benz = new benzCore(this, this.config, benzConfig, cool);
         Bukkit.getPluginManager().registerEvents(this.benz, this);

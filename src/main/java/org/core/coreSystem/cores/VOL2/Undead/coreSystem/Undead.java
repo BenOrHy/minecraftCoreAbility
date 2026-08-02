@@ -19,13 +19,6 @@ public class Undead {
 
     //passive
     public HashMap<UUID, Boolean> collision = new HashMap<>();
-    public HashMap<UUID, Double> f_charge_defend = new HashMap<>();
-    public HashMap<UUID, Integer> f_charge_hit_count = new HashMap<>();
-    public HashMap<UUID, Double> f_charge_progress = new HashMap<>();
-    public HashMap<UUID, Boolean> f_charge_consumed = new HashMap<>();
-    public HashMap<UUID, Double> f_buff_rate = new HashMap<>();
-    public HashMap<UUID, Integer> f_buff_ticks = new HashMap<>();
-    public HashMap<UUID, Double> f_debuff_rate = new HashMap<>();
 
     public HashSet<UUID> is_swapping = new HashSet<>();
 
@@ -40,6 +33,13 @@ public class Undead {
     public long q_Skill_Cool = 13000L;
 
     //F
+    public HashMap<UUID, Double> f_charge_defend = new HashMap<>();
+    public HashMap<UUID, Integer> f_charge_hit_count = new HashMap<>();
+    public HashMap<UUID, Double> f_charge_progress = new HashMap<>();
+    public HashMap<UUID, Boolean> f_charge_consumed = new HashMap<>();
+    public HashMap<UUID, Double> f_buff_rate = new HashMap<>();
+    public HashMap<UUID, Integer> f_buff_ticks = new HashMap<>();
+    public HashMap<UUID, Double> f_debuff_rate = new HashMap<>();
     public long f_Skill_Cool = 0;
 
     public String getWeaponCoolKey(Material material) {
