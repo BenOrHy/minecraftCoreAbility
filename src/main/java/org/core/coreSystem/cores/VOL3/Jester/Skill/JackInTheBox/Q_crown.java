@@ -156,7 +156,6 @@ public class Q_crown implements SkillBase {
                     player.playSound(landLoc, Sound.ENTITY_PLAYER_LEVELUP, 1.2f, 1.5f);
                 }
 
-                // 💡 스킬 로직이 완전히 끝난 직후 락(Lock) 해제 및 다음 트릭쇼 무기로 전환!
                 config.isExecutionTime.remove(player.getUniqueId());
                 onSkipStage.accept(player);
             }
