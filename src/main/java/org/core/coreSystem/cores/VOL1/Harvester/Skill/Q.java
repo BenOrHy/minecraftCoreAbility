@@ -1,6 +1,8 @@
 package org.core.coreSystem.cores.VOL1.Harvester.Skill;
 
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.entity.Player;
@@ -103,7 +105,11 @@ public class Q implements SkillBase {
         }
 
         double healAmount = count;
-        double newHealth = Math.min(player.getHealth() + healAmount, player.getMaxHealth());
+
+        AttributeInstance maxHealthAttr = player.getAttribute(Attribute.MAX_HEALTH);
+        double maxHealth = (maxHealthAttr != null) ? maxHealthAttr.getValue() : 20.0;
+
+        double newHealth = Math.min(player.getHealth() + healAmount, maxHealth);
         player.setHealth(newHealth);
     }
 }

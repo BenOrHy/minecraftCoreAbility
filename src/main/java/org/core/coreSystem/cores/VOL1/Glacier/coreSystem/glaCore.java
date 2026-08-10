@@ -31,6 +31,10 @@ import org.core.coreSystem.cores.VOL1.Glacier.Skill.F;
 import org.core.coreSystem.cores.VOL1.Glacier.Skill.Q;
 import org.core.coreSystem.cores.VOL1.Glacier.Skill.R;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 public class glaCore extends absCore {
     private final Core plugin;
     private final Glacier config;
@@ -135,12 +139,13 @@ public class glaCore extends absCore {
 
         World world = player.getWorld();
         Location playerLocation = player.getLocation();
-        Vector direction = playerLocation.getDirection().normalize().multiply(1.3);
+        Vector direction = playerLocation.getDirection().normalize();
 
         AttributeInstance attackSpeed = player.getAttribute(Attribute.ATTACK_SPEED);
         if (attackSpeed != null) attackSpeed.setBaseValue(1.25);
 
-        world.playSound(player.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_BREAK, 1, 1);
+        world.playSound(player.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_BREAK, 1.0f, 1.2f);
+        world.playSound(player.getLocation(), Sound.ITEM_TRIDENT_THROW, 0.8f, 1.5f);
 
         DamageSource source = DamageSource.builder(DamageType.MAGIC)
                 .withCausingEntity(player)
@@ -151,27 +156,71 @@ public class glaCore extends absCore {
 
         new BukkitRunnable() {
             int ticks = 0;
+            double speed = 1.2;
+
+            Set<UUID> hitEntities = new HashSet<>();
+
+            Vector right = direction.clone().crossProduct(new Vector(0, 1, 0));
+            Vector up;
+            Location lastLocation = playerLocation.clone().add(0, 1.0, 0).add(direction.clone().multiply(0.7));
+
+            Particle.DustOptions cyanDust = new Particle.DustOptions(Color.fromRGB(0, 255, 255), 0.7f);
+            Particle.DustOptions whiteDust = new Particle.DustOptions(Color.fromRGB(200, 255, 255), 0.5f);
 
             @Override
             public void run() {
-                if (ticks >= 6 || config.collision.getOrDefault(player.getUniqueId(), true)) {
+                if (right.lengthSquared() < 0.001) {
+                    right = new Vector(1, 0, 0);
+                } else {
+                    right.normalize();
+                }
+                up = right.clone().crossProduct(direction).normalize();
+
+                if (ticks >= 9 || config.collision.getOrDefault(player.getUniqueId(), true)) {
                     config.collision.remove(player.getUniqueId());
                     this.cancel();
                     return;
                 }
 
-                Location particleLocation = playerLocation.clone()
-                        .add(direction.clone().multiply(ticks * 1.5))
-                        .add(0, 1.4, 0);
+                Location currentLocation = playerLocation.clone()
+                        .add(0, 1.0, 0)
+                        .add(direction.clone().multiply(ticks * speed));
 
-                Particle.DustOptions dustOptions = new Particle.DustOptions(Color.fromRGB(0, 255, 255), 0.6f);
-                world.spawnParticle(Particle.SNOWFLAKE, particleLocation, 6, 0.5, 0.5, 0.5, 0);
-                world.spawnParticle(Particle.DUST, particleLocation, 3, 0.3, 0.3, 0.3, 0, dustOptions);
+                double distance = lastLocation.distance(currentLocation);
+                if (distance > 0) {
+                    Vector linkDir = currentLocation.toVector().subtract(lastLocation.toVector()).normalize();
 
-                for (Entity entity : world.getNearbyEntities(particleLocation, 0.6, 0.6, 0.6)) {
+                    for (double d = 0; d <= distance; d += 0.25) {
+                        Location point = lastLocation.clone().add(linkDir.clone().multiply(d));
+
+                        double globalWavePhase = (ticks * 0.8) + (d * 0.4);
+
+                        for (double w = -0.8; w <= 0.8; w += 0.4) {
+                            double waveOffset = Math.sin(globalWavePhase) * 0.35;
+
+                            Vector offset = right.clone().multiply(w).add(up.clone().multiply(waveOffset));
+                            Location pLoc = point.clone().add(offset);
+
+                            world.spawnParticle(Particle.SNOWFLAKE, pLoc, 1, 0.02, 0.02, 0.02, 0);
+                            world.spawnParticle(Particle.DUST, pLoc, 1, 0, 0, 0, 0, (Math.random() > 0.5 ? cyanDust : whiteDust));
+                        }
+
+                        if (Math.random() < 0.2) {
+                            world.spawnParticle(Particle.SOUL_FIRE_FLAME, point, 1, 0.2, 0.2, 0.2, 0.01);
+                        }
+                    }
+                }
+                lastLocation = currentLocation;
+
+                for (Entity entity : world.getNearbyEntities(currentLocation, 1.0, 0.8, 1.0)) {
                     if (entity instanceof LivingEntity target && entity != player) {
 
-                        world.playSound(player.getLocation(), Sound.BLOCK_GLASS_BREAK, 1, 1);
+                        if (hitEntities.contains(target.getUniqueId())) continue;
+                        hitEntities.add(target.getUniqueId());
+
+                        world.playSound(target.getLocation(), Sound.BLOCK_GLASS_BREAK, 1.0f, 1.2f);
+                        world.playSound(target.getLocation(), Sound.ENTITY_PLAYER_HURT_FREEZE, 1.0f, 1.0f);
+                        world.spawnParticle(Particle.ELECTRIC_SPARK, target.getLocation().add(0, 1, 0), 10, 0.2, 0.2, 0.2, 0.1);
 
                         ForceDamage forceDamage = new ForceDamage(target, 3.0, source, false);
                         forceDamage.applyEffect(player);
@@ -180,9 +229,6 @@ public class glaCore extends absCore {
                             Frost frostbite = new Frost(target, 10000L);
                             frostbite.applyEffect(player);
                         }
-
-                        config.collision.put(player.getUniqueId(), true);
-                        break;
                     }
                 }
 

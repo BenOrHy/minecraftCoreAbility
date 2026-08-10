@@ -54,6 +54,8 @@ public class F implements SkillBase {
             Location playerLocation = player.getLocation();
             Vector direction = playerLocation.getDirection().normalize().multiply(1.3);
 
+            Particle.DustOptions fireballCore = new Particle.DustOptions(Color.fromRGB(255, 80, 0), 2.5f);
+
             new BukkitRunnable() {
                 int ticks = 0;
 
@@ -76,8 +78,16 @@ public class F implements SkillBase {
                         return;
                     }
 
-                    player.getWorld().spawnParticle(Particle.FLAME, particleLocation, 3, 0.1, 0.1, 0.1, 0);
-                    player.getWorld().spawnParticle(Particle.SMOKE, particleLocation, 2, 0.1, 0.1, 0.1, 0);
+                    world.spawnParticle(Particle.DUST, particleLocation, 10, 0.3, 0.3, 0.3, 0, fireballCore);
+
+                    world.spawnParticle(Particle.FLAME, particleLocation, 15, 0.4, 0.4, 0.4, 0.05);
+                    world.spawnParticle(Particle.SOUL_FIRE_FLAME, particleLocation, 5, 0.3, 0.3, 0.3, 0.02);
+
+                    world.spawnParticle(Particle.LARGE_SMOKE, particleLocation, 4, 0.2, 0.2, 0.2, 0.01);
+
+                    if (ticks % 2 == 0) {
+                        world.spawnParticle(Particle.LAVA, particleLocation, 1, 0.2, 0.2, 0.2, 0);
+                    }
 
                     for (Entity entity : world.getNearbyEntities(particleLocation, 0.5, 0.5, 0.5)) {
                         if (entity instanceof LivingEntity target && entity != player) {

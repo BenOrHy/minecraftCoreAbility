@@ -84,7 +84,7 @@ public class Q implements SkillBase {
 
                             double healRatio = 0.40 - (0.25 * healthPercentage);
 
-                            healRatio = Math.max(0.15, Math.min(0.40, healRatio));
+                            healRatio = Math.clamp(healRatio, 0.15, 0.40);
 
                             double healAmount = maxHealth * healRatio;
 

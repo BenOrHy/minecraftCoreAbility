@@ -133,8 +133,7 @@ public class pyroCore extends absCore {
         if(tag.Pyro.contains(player)) {
             if (event.getCause() == EntityDamageEvent.DamageCause.FIRE ||
                     event.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK ||
-                    event.getCause() == EntityDamageEvent.DamageCause.LAVA ||
-                    event.getCause() == EntityDamageEvent.DamageCause.HOT_FLOOR) {
+                    event.getCause() == EntityDamageEvent.DamageCause.LAVA) {
 
                 event.setCancelled(true);
                 player.setFireTicks(0);
@@ -198,8 +197,18 @@ public class pyroCore extends absCore {
         new BukkitRunnable() {
             int ticks = 0;
 
+            Vector axis = direction.clone().normalize();
+            Vector p1 = new Vector(-axis.getZ(), 0, axis.getX());
+            Location lastLocation = playerLocation.clone().add(0, 1.4, 0).add(direction.clone().multiply(0.5));
+            Particle.DustOptions fireDust = new Particle.DustOptions(Color.fromRGB(255, 100, 0), 0.8f);
+
             @Override
             public void run() {
+                if (p1.lengthSquared() < 0.001) {
+                    p1 = new Vector(1, 0, 0);
+                } else {
+                    p1.normalize();
+                }
 
                 if (ticks >= 17 || config.collision.getOrDefault(player.getUniqueId(), true)) {
                     config.collision.remove(player.getUniqueId());
@@ -207,14 +216,33 @@ public class pyroCore extends absCore {
                     return;
                 }
 
-                Location particleLocation = playerLocation.clone()
-                        .add(direction.clone().multiply(ticks * 1.5))
-                        .add(0, 1.4, 0);
+                Location currentLocation = playerLocation.clone()
+                        .add(0, 1.4, 0)
+                        .add(direction.clone().multiply(ticks * 1.5));
 
-                world.spawnParticle(Particle.FLAME, particleLocation, 7, 0.5, 0.5, 0.5, 0);
-                world.spawnParticle(Particle.SMOKE, particleLocation, 3, 0.3, 0.3, 0.3, 0);
+                double distance = lastLocation.distance(currentLocation);
+                if (distance > 0) {
+                    Vector linkDir = currentLocation.toVector().subtract(lastLocation.toVector()).normalize();
 
-                Block block = particleLocation.getBlock();
+                    for (double d = 0; d <= distance; d += 0.3) {
+                        Location point = lastLocation.clone().add(linkDir.clone().multiply(d));
+
+                        double currentAngle = (ticks + (d / distance)) * 1.2;
+
+                        Vector off1 = p1.clone().multiply(0.35).rotateAroundAxis(axis, currentAngle);
+                        Vector off2 = p1.clone().multiply(0.35).rotateAroundAxis(axis, currentAngle + Math.PI);
+
+                        world.spawnParticle(Particle.FLAME, point, 1, 0.05, 0.05, 0.05, 0);
+
+                        world.spawnParticle(Particle.SOUL_FIRE_FLAME, point.clone().add(off1), 1, 0, 0, 0, 0);
+                        world.spawnParticle(Particle.FLAME, point.clone().add(off2), 1, 0, 0, 0, 0);
+                        world.spawnParticle(Particle.DUST, point.clone().add(off1), 1, 0, 0, 0, 0, fireDust);
+                    }
+                }
+
+                lastLocation = currentLocation;
+
+                Block block = currentLocation.getBlock();
 
                 if (block.isBurnable() || block.getType() == Material.ICE || block.getType() == Material.SNOW || block.getType() == Material.BLUE_ICE || block.getType() == Material.FROSTED_ICE || block.getType() == Material.PACKED_ICE || block.getType() == Material.POWDER_SNOW || block.getType() == Material.SNOW_BLOCK) {
                     if(block.getType() == Material.BLUE_ICE) {
@@ -230,16 +258,16 @@ public class pyroCore extends absCore {
                 }
 
                 if(!block.isPassable()){
-                    Burst(player, particleLocation);
+                    Burst(player, currentLocation);
                     config.collision.put(player.getUniqueId(), true);
                 }
 
-                for (Entity entity : world.getNearbyEntities(particleLocation, 0.7, 0.7, 0.7)) {
+                for (Entity entity : world.getNearbyEntities(currentLocation, 0.7, 0.7, 0.7)) {
                     if (entity instanceof LivingEntity target && entity != player) {
 
                         ForceDamage forceDamage = new ForceDamage(target, 5.0, source, false);
                         forceDamage.applyEffect(player);
-                        Burst(player, particleLocation);
+                        Burst(player, currentLocation);
                         config.collision.put(player.getUniqueId(), true);
                         break;
                     }

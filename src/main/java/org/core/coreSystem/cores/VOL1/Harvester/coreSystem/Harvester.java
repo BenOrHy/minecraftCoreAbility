@@ -19,8 +19,8 @@ public class Harvester {
     public HashMap<UUID, Boolean> rskill_using = new HashMap<>();
     public HashMap<UUID, HashSet<Entity>> damaged = new HashMap<>();
     public double r_Skill_amp = 0.2;
-    public double r_Skill_damage = 4;
-    public long r_Skill_Cool = 3000;
+    public double r_Skill_damage = 6;
+    public long r_Skill_Cool = 1300;
 
     //Q
     public long q_Skill_Cool = 16000;

@@ -53,6 +53,8 @@ public class coreConfig {
     public Set<Player> Undead;
     public Set<Player> Cheshire;
     public Set<Player> Jester;
+    public Set<Player> Stroke;
+    public Set<Player> Scout;
 
     public coreConfig(JavaPlugin plugin, Cool cool) {
         this.plugin = plugin;
@@ -84,6 +86,8 @@ public class coreConfig {
         this.Undead = new persistentPlayerSet(plugin, "setting_undead");
         this.Cheshire = new persistentPlayerSet(plugin, "setting_cheshire");
         this.Jester = new persistentPlayerSet(plugin, "setting_jester");
+        this.Stroke = new persistentPlayerSet(plugin, "setting_stroke");
+        this.Scout = new persistentPlayerSet(plugin, "setting_scout");
     }
 
     public void registerCore(String name, absCore core) {
@@ -117,6 +121,8 @@ public class coreConfig {
         if (Undead.contains(player)) return "UNDEAD";
         if (Cheshire.contains(player)) return "CHESHIRE";
         if (Jester.contains(player)) return "JESTER";
+        if (Stroke.contains(player)) return "STROKE";
+        if (Scout.contains(player)) return "SCOUT";
         return "NONE";
     }
 
@@ -162,6 +168,8 @@ public class coreConfig {
         player.getPersistentDataContainer().set(new NamespacedKey(plugin, "setting_undead"), PersistentDataType.BYTE, (byte) 0);
         player.getPersistentDataContainer().set(new NamespacedKey(plugin, "setting_cheshire"), PersistentDataType.BYTE, (byte) 0);
         player.getPersistentDataContainer().set(new NamespacedKey(plugin, "setting_jester"), PersistentDataType.BYTE, (byte) 0);
+        player.getPersistentDataContainer().set(new NamespacedKey(plugin, "setting_stroke"), PersistentDataType.BYTE, (byte) 0);
+        player.getPersistentDataContainer().set(new NamespacedKey(plugin, "setting_scout"), PersistentDataType.BYTE, (byte) 0);
     }
 
     public void setSetting(Player player, String setting, boolean value) {
@@ -217,6 +225,8 @@ public class coreConfig {
             case "undead" -> new NamespacedKey(plugin, "setting_undead");
             case "cheshire" -> new NamespacedKey(plugin, "setting_cheshire");
             case "jester" -> new NamespacedKey(plugin, "setting_jester");
+            case "stroke" -> new NamespacedKey(plugin, "setting_stroke");
+            case "scout" -> new NamespacedKey(plugin, "setting_scout");
             default -> null;
         };
     }

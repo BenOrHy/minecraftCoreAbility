@@ -105,17 +105,18 @@ public class comCore extends absCore {
 
         World world = player.getWorld();
         Location playerLocation = player.getLocation();
-        Vector direction = playerLocation.getDirection().normalize().multiply(1.0);
+        Vector direction = playerLocation.getDirection().normalize();
 
         AttributeInstance attackSpeed = player.getAttribute(Attribute.ATTACK_SPEED);
         if (attackSpeed != null) attackSpeed.setBaseValue(1.0);
 
-        world.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 2.0f, 1);
+        world.playSound(playerLocation, Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1.0f, 1.8f);
+        world.playSound(playerLocation, Sound.ENTITY_GUARDIAN_ATTACK, 0.8f, 2.0f);
 
         config.collision.put(player.getUniqueId(), false);
 
-        Particle.DustOptions dustOptions = new Particle.DustOptions(Color.fromRGB(220, 150, 100), 1.2f);
-        Particle.DustOptions dustOptions_gra = new Particle.DustOptions(Color.fromRGB(255, 255, 255), 0.7f);
+        Particle.DustOptions coreDust = new Particle.DustOptions(Color.fromRGB(150, 255, 255), 1.0f);
+        Particle.DustOptions outerDust = new Particle.DustOptions(Color.fromRGB(0, 150, 255), 0.8f);
 
         DamageSource source = DamageSource.builder(DamageType.MAGIC)
                 .withCausingEntity(player)
@@ -124,6 +125,8 @@ public class comCore extends absCore {
 
         new BukkitRunnable() {
             int ticks = 0;
+            double speed = 2.0;
+            Location lastLocation = playerLocation.clone().add(0, 1.4, 0).add(direction.clone().multiply(0.5));
 
             @Override
             public void run() {
@@ -133,15 +136,30 @@ public class comCore extends absCore {
                     return;
                 }
 
-                Location particleLocation = playerLocation.clone()
-                        .add(direction.clone().multiply(ticks * 1.6))
-                        .add(0, 1.4, 0);
+                Location currentLocation = playerLocation.clone()
+                        .add(0, 1.4, 0)
+                        .add(direction.clone().multiply(ticks * speed));
 
-                world.spawnParticle(Particle.DUST, particleLocation, 1, 0.1, 0.1, 0.1, 0, dustOptions);
-                world.spawnParticle(Particle.DUST, particleLocation, 2, 0.1, 0.1, 0.1, 0, dustOptions_gra);
+                double distance = lastLocation.distance(currentLocation);
+                Vector linkDir = currentLocation.toVector().subtract(lastLocation.toVector()).normalize();
 
-                for (Entity entity : world.getNearbyEntities(particleLocation, 0.5, 0.5, 0.5)) {
+                for (double d = 0; d <= distance; d += 0.2) {
+                    Location point = lastLocation.clone().add(linkDir.clone().multiply(d));
+
+                    world.spawnParticle(Particle.DUST, point, 1, 0.02, 0.02, 0.02, 0, coreDust);
+                    world.spawnParticle(Particle.DUST, point, 2, 0.05, 0.05, 0.05, 0, outerDust);
+
+                    if (Math.random() < 0.2) {
+                        world.spawnParticle(Particle.ELECTRIC_SPARK, point, 1, 0.1, 0.1, 0.1, 0);
+                    }
+                }
+
+                for (Entity entity : world.getNearbyEntities(currentLocation, 1.0, 1.0, 1.0)) {
                     if (entity instanceof LivingEntity target && entity != player) {
+
+                        world.playSound(target.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.2f);
+                        world.playSound(target.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 0.5f, 2.0f);
+                        world.spawnParticle(Particle.ELECTRIC_SPARK, target.getLocation().add(0, 1, 0), 10, 0.2, 0.2, 0.2, 0.1);
 
                         ForceDamage forceDamage = new ForceDamage(target, 3.0, source, false);
                         forceDamage.applyEffect(player);
@@ -155,6 +173,7 @@ public class comCore extends absCore {
                     }
                 }
 
+                lastLocation = currentLocation;
                 ticks++;
             }
         }.runTaskTimer(plugin, 0L, 1L);
@@ -167,7 +186,9 @@ public class comCore extends absCore {
         for (Entity entity : world.getNearbyEntities(center, 5, 5, 5)) {
             if (entity.equals(player) || !(entity instanceof LivingEntity)) continue;
 
-            entity.getWorld().playSound(entity.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 2.0f, 1);
+            // [사운드 개편] 커맨드 블록에서 발사될 때 기계적인 작동음과 타격음 추가
+            world.playSound(center, Sound.BLOCK_BEACON_ACTIVATE, 1.5f, 2.0f);
+            world.playSound(entity.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1.0f, 1.5f);
 
             DamageSource source = DamageSource.builder(DamageType.MAGIC)
                     .withCausingEntity(player)
@@ -187,11 +208,21 @@ public class comCore extends absCore {
 
     public void attackLine(Player player, double maxDistance, Location start, Vector direction){
         double step = 0.2;
-        Particle.DustOptions dustOptions_gra = new Particle.DustOptions(Color.fromRGB(0, 255, 0), 0.7f);
+
+        // [이펙트 개편] 협공 레이저: 단순 녹색 가루에서 입체적인 푸른 레이저 + 스파크로 변경
+        Particle.DustOptions coreDust = new Particle.DustOptions(Color.fromRGB(200, 255, 255), 0.6f);
+        Particle.DustOptions outerDust = new Particle.DustOptions(Color.fromRGB(0, 150, 255), 0.8f);
 
         for (double i = 0; i <= maxDistance; i += step) {
             Location point = start.clone().add(direction.clone().multiply(i));
-            player.spawnParticle(Particle.DUST, point, 2, 0.05, 0.05, 0.05, 0, dustOptions_gra);
+
+            player.getWorld().spawnParticle(Particle.DUST, point, 1, 0.02, 0.02, 0.02, 0, coreDust);
+            player.getWorld().spawnParticle(Particle.DUST, point, 1, 0.05, 0.05, 0.05, 0, outerDust);
+
+            // 빔 주변에 전기가 튀는 연출 추가
+            if (Math.random() < 0.15) {
+                player.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, point, 1, 0.1, 0.1, 0.1, 0);
+            }
         }
     }
 

@@ -50,7 +50,7 @@ public class pyroInventory extends absInventory {
 
         return switch (skill) {
             case "main" -> Component.text("PYRO");
-            case "R" -> Component.text("FirePoll");
+            case "R" -> Component.text("Overheat Dash");
             case "Q" -> Component.text("Purgatory");
             case "F" -> Component.text("GLOW BURST");
             default -> Component.text("???");
@@ -102,10 +102,12 @@ public class pyroInventory extends absInventory {
 
                 lore.add(Component.text("------------").color(NamedTextColor.WHITE));
                 lore.add(Component.text("타입 : 공격").color(NamedTextColor.LIGHT_PURPLE));
-                lore.add(Component.text("시스템 : 지정형").color(NamedTextColor.LIGHT_PURPLE));
+                lore.add(Component.text("시스템 : 마킹").color(NamedTextColor.LIGHT_PURPLE));
                 lore.add(Component.text("대상 : 적 오브젝트").color(NamedTextColor.LIGHT_PURPLE));
                 lore.add(Component.text("------------").color(NamedTextColor.WHITE));
-                lore.add(Component.text("지정 : 선딜레이 후 지정한 대상 바닥에 불기둥을 소환한다.").color(NamedTextColor.GREEN));
+                lore.add(Component.text("0.9초 동안 무적 상태로 전방을 향해 화염 구체로 변해 질주한다.").color(NamedTextColor.GREEN));
+                lore.add(Component.text("돌진에 스친 적은 1초간 이동속도가 60% 감소하며 위치가 마킹된다.").color(NamedTextColor.GREEN));
+                lore.add(Component.text("마킹 0.9초 뒤, 해당 좌표에 거대한 불기둥이 폭발해 3초의 기절과 피해를 입힌다.").color(NamedTextColor.GREEN));
                 break;
             case "Q":
                 requireXp = (level < 6) ? Component.text("Require EXP : " + requireExpOfQ.get((int) level)) : Component.text("Require EXP : MAX");

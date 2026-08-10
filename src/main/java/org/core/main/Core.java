@@ -11,27 +11,36 @@ import org.core.cool.Cool;
 import org.core.coreSystem.cores.KEY.PLAYER.coreSystem.PLAYER;
 import org.core.coreSystem.cores.KEY.PLAYER.coreSystem.playerCore;
 import org.core.coreSystem.cores.KEY.PLAYER.coreSystem.playerInventory;
-import org.core.coreSystem.cores.VOL2.Undead.coreSystem.Undead;
-import org.core.coreSystem.cores.VOL2.Undead.coreSystem.undeadCore;
-import org.core.coreSystem.cores.VOL2.Undead.coreSystem.undeadInventory;
-import org.core.coreSystem.cores.VOL3.Charlotte.coreSystem.Charlotte;
-import org.core.coreSystem.cores.VOL3.Charlotte.coreSystem.charCore;
-import org.core.coreSystem.cores.VOL3.Charlotte.coreSystem.charInventory;
-import org.core.coreSystem.cores.VOL3.Darmes.coreSystem.Darmes;
-import org.core.coreSystem.cores.VOL3.Darmes.coreSystem.darmesCore;
-import org.core.coreSystem.cores.VOL3.Darmes.coreSystem.darmesInventory;
-import org.core.coreSystem.cores.VOL3.Jester.coreSystem.Jester;
-import org.core.coreSystem.cores.VOL3.Jester.coreSystem.jestCore;
-import org.core.coreSystem.cores.VOL3.Jester.coreSystem.jestInventory;
-import org.core.coreSystem.cores.VOL3.Residue.coreSystem.Residue;
-import org.core.coreSystem.cores.VOL3.Residue.coreSystem.residueCore;
-import org.core.coreSystem.cores.VOL3.Residue.coreSystem.residueInventory;
-import org.core.coreSystem.cores.VOL3.Lavender.coreSystem.Lavender;
-import org.core.coreSystem.cores.VOL3.Lavender.coreSystem.lavCore;
-import org.core.coreSystem.cores.VOL3.Lavender.coreSystem.lavInventory;
-import org.core.coreSystem.cores.VOL2.Rose.coreSystem.Rose;
-import org.core.coreSystem.cores.VOL2.Rose.coreSystem.roseCore;
-import org.core.coreSystem.cores.VOL2.Rose.coreSystem.roseInventory;
+import org.core.coreSystem.cores.VOL2.Cheshire.coreSystem.Cheshire;
+import org.core.coreSystem.cores.VOL2.Cheshire.coreSystem.chesCore;
+import org.core.coreSystem.cores.VOL2.Cheshire.coreSystem.chesInventory;
+import org.core.coreSystem.cores.VOL5.Scout.coreSystem.Scout;
+import org.core.coreSystem.cores.VOL5.Scout.coreSystem.sctCore;
+import org.core.coreSystem.cores.VOL5.Scout.coreSystem.sctInventory;
+import org.core.coreSystem.cores.VOL2.Stroke.coreSystem.Stroke;
+import org.core.coreSystem.cores.VOL2.Stroke.coreSystem.strCore;
+import org.core.coreSystem.cores.VOL2.Stroke.coreSystem.strInventory;
+import org.core.coreSystem.cores.VOL4.Undead.coreSystem.Undead;
+import org.core.coreSystem.cores.VOL4.Undead.coreSystem.undeadCore;
+import org.core.coreSystem.cores.VOL4.Undead.coreSystem.undeadInventory;
+import org.core.coreSystem.cores.VOL6.Charlotte.coreSystem.Charlotte;
+import org.core.coreSystem.cores.VOL6.Charlotte.coreSystem.charCore;
+import org.core.coreSystem.cores.VOL6.Charlotte.coreSystem.charInventory;
+import org.core.coreSystem.cores.VOL6.Darmes.coreSystem.Darmes;
+import org.core.coreSystem.cores.VOL6.Darmes.coreSystem.darmesCore;
+import org.core.coreSystem.cores.VOL6.Darmes.coreSystem.darmesInventory;
+import org.core.coreSystem.cores.VOL6.Jester.coreSystem.Jester;
+import org.core.coreSystem.cores.VOL6.Jester.coreSystem.jestCore;
+import org.core.coreSystem.cores.VOL6.Jester.coreSystem.jestInventory;
+import org.core.coreSystem.cores.VOL6.Residue.coreSystem.Residue;
+import org.core.coreSystem.cores.VOL6.Residue.coreSystem.residueCore;
+import org.core.coreSystem.cores.VOL6.Residue.coreSystem.residueInventory;
+import org.core.coreSystem.cores.VOL6.Lavender.coreSystem.Lavender;
+import org.core.coreSystem.cores.VOL6.Lavender.coreSystem.lavCore;
+import org.core.coreSystem.cores.VOL6.Lavender.coreSystem.lavInventory;
+import org.core.coreSystem.cores.VOL3.Rose.coreSystem.Rose;
+import org.core.coreSystem.cores.VOL3.Rose.coreSystem.roseCore;
+import org.core.coreSystem.cores.VOL3.Rose.coreSystem.roseInventory;
 import org.core.database.dbConnect;
 import org.core.effect.effectPlugin.moveCancelManager;
 import org.core.level.LevelingManager;
@@ -42,18 +51,18 @@ import org.core.coreSystem.cores.VOL1.Bamboo.coreSystem.bambInventory;
 import org.core.coreSystem.cores.KEY.Benzene.coreSystem.Benzene;
 import org.core.coreSystem.cores.KEY.Benzene.coreSystem.benzCore;
 import org.core.coreSystem.cores.KEY.Benzene.coreSystem.benzInventory;
-import org.core.coreSystem.cores.VOL1.Blaze.coreSystem.Blaze;
-import org.core.coreSystem.cores.VOL1.Blaze.coreSystem.blazeCore;
-import org.core.coreSystem.cores.VOL1.Blaze.coreSystem.blazeInventory;
+import org.core.coreSystem.cores.VOL5.Blaze.coreSystem.Blaze;
+import org.core.coreSystem.cores.VOL5.Blaze.coreSystem.blazeCore;
+import org.core.coreSystem.cores.VOL5.Blaze.coreSystem.blazeInventory;
 import org.core.coreSystem.cores.VOL1.Blossom.coreSystem.Blossom;
 import org.core.coreSystem.cores.VOL1.Blossom.coreSystem.blossCore;
 import org.core.coreSystem.cores.VOL1.Blossom.coreSystem.blossInventory;
-import org.core.coreSystem.cores.VOL2.Blue.coreSystem.Blue;
-import org.core.coreSystem.cores.VOL2.Blue.coreSystem.blueCore;
-import org.core.coreSystem.cores.VOL2.Blue.coreSystem.blueInventory;
-import org.core.coreSystem.cores.VOL3.Carpenter.coreSystem.Carpenter;
-import org.core.coreSystem.cores.VOL3.Carpenter.coreSystem.carpCore;
-import org.core.coreSystem.cores.VOL3.Carpenter.coreSystem.carpInventory;
+import org.core.coreSystem.cores.VOL5.Blue.coreSystem.Blue;
+import org.core.coreSystem.cores.VOL5.Blue.coreSystem.blueCore;
+import org.core.coreSystem.cores.VOL5.Blue.coreSystem.blueInventory;
+import org.core.coreSystem.cores.VOL6.Carpenter.coreSystem.Carpenter;
+import org.core.coreSystem.cores.VOL6.Carpenter.coreSystem.carpCore;
+import org.core.coreSystem.cores.VOL6.Carpenter.coreSystem.carpInventory;
 import org.core.coreSystem.cores.VOL1.Commander.coreSystem.Commander;
 import org.core.coreSystem.cores.VOL1.Commander.coreSystem.comCore;
 import org.core.coreSystem.cores.VOL1.Commander.coreSystem.comInventory;
@@ -66,12 +75,12 @@ import org.core.coreSystem.cores.VOL1.Glacier.coreSystem.glaInventory;
 import org.core.coreSystem.cores.VOL1.Harvester.coreSystem.Harvester;
 import org.core.coreSystem.cores.VOL1.Harvester.coreSystem.harvCore;
 import org.core.coreSystem.cores.VOL1.Harvester.coreSystem.harvInventory;
-import org.core.coreSystem.cores.VOL3.Knight.coreSystem.Knight;
-import org.core.coreSystem.cores.VOL3.Knight.coreSystem.knightCore;
-import org.core.coreSystem.cores.VOL3.Knight.coreSystem.knightInventory;
-import org.core.coreSystem.cores.VOL3.Luster.coreSystem.Luster;
-import org.core.coreSystem.cores.VOL3.Luster.coreSystem.lustCore;
-import org.core.coreSystem.cores.VOL3.Luster.coreSystem.lustInventory;
+import org.core.coreSystem.cores.VOL6.Knight.coreSystem.Knight;
+import org.core.coreSystem.cores.VOL6.Knight.coreSystem.knightCore;
+import org.core.coreSystem.cores.VOL6.Knight.coreSystem.knightInventory;
+import org.core.coreSystem.cores.VOL6.Luster.coreSystem.Luster;
+import org.core.coreSystem.cores.VOL6.Luster.coreSystem.lustCore;
+import org.core.coreSystem.cores.VOL6.Luster.coreSystem.lustInventory;
 import org.core.coreSystem.cores.KEY.Nightel.coreSystem.Nightel;
 import org.core.coreSystem.cores.KEY.Nightel.coreSystem.nightCore;
 import org.core.coreSystem.cores.KEY.Nightel.coreSystem.nightInventory;
@@ -81,9 +90,9 @@ import org.core.coreSystem.cores.VOL1.Pyro.coreSystem.pyroInventory;
 import org.core.coreSystem.cores.VOL1.Saboteur.coreSystem.Saboteur;
 import org.core.coreSystem.cores.VOL1.Saboteur.coreSystem.sabCore;
 import org.core.coreSystem.cores.VOL1.Saboteur.coreSystem.sabInventory;
-import org.core.coreSystem.cores.VOL3.Swordsman.coreSystem.Swordsman;
-import org.core.coreSystem.cores.VOL3.Swordsman.coreSystem.swordCore;
-import org.core.coreSystem.cores.VOL3.Swordsman.coreSystem.swordInventory;
+import org.core.coreSystem.cores.VOL6.Swordsman.coreSystem.Swordsman;
+import org.core.coreSystem.cores.VOL6.Swordsman.coreSystem.swordCore;
+import org.core.coreSystem.cores.VOL6.Swordsman.coreSystem.swordInventory;
 import org.core.coreSystem.cores.VOL2.Burst.coreSystem.Burst;
 import org.core.coreSystem.cores.VOL2.Burst.coreSystem.burstCore;
 import org.core.coreSystem.cores.VOL2.Burst.coreSystem.burstInventory;
@@ -130,6 +139,9 @@ public final class Core extends JavaPlugin implements Listener {
     private charCore charlotte;
     private undeadCore undead;
     private jestCore jester;
+    private chesCore cheshire;
+    private strCore stroke;
+    private sctCore scout;
 
     private playerInventory playerInv;
     private nightInventory nightInv;
@@ -156,6 +168,9 @@ public final class Core extends JavaPlugin implements Listener {
     private charInventory charInv;
     private undeadInventory undeadInv;
     private jestInventory jestInv;
+    private chesInventory chesInv;
+    private strInventory strInv;
+    private sctInventory sctInv;
 
     private EntityLevelingManager Elevel;
 
@@ -197,6 +212,9 @@ public final class Core extends JavaPlugin implements Listener {
         Charlotte charConfig = new Charlotte();
         Undead undeadConfig = new Undead();
         Jester jestConfig = new Jester();
+        Cheshire chesConfig = new Cheshire();
+        Stroke strConfig = new Stroke();
+        Scout sctConfig = new Scout();
 
         this.cool = new Cool(this);
 
@@ -374,6 +392,27 @@ public final class Core extends JavaPlugin implements Listener {
 
         this.jestInv = new jestInventory(this, this.config);
         Bukkit.getPluginManager().registerEvents(this.jestInv, this);
+
+        this.cheshire = new chesCore(this, this.config, chesConfig, cool);
+        Bukkit.getPluginManager().registerEvents(this.cheshire, this);
+        this.config.registerCore("cheshire", this.cheshire);
+
+        this.chesInv = new chesInventory(this, this.config);
+        Bukkit.getPluginManager().registerEvents(this.chesInv, this);
+
+        this.stroke = new strCore(this, this.config, strConfig, cool);
+        Bukkit.getPluginManager().registerEvents(this.stroke, this);
+        this.config.registerCore("stroke", this.stroke);
+
+        this.strInv = new strInventory(this, this.config);
+        Bukkit.getPluginManager().registerEvents(this.strInv, this);
+
+        this.scout = new sctCore(this, this.config, sctConfig, cool);
+        Bukkit.getPluginManager().registerEvents(this.scout, this);
+        this.config.registerCore("scout", this.scout);
+
+        this.sctInv = new sctInventory(this, this.config);
+        Bukkit.getPluginManager().registerEvents(this.sctInv, this);
 
         this.benz = new benzCore(this, this.config, benzConfig, cool);
         Bukkit.getPluginManager().registerEvents(this.benz, this);

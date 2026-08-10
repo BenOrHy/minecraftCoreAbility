@@ -7,6 +7,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.Leaves;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Entity;
@@ -75,16 +76,59 @@ public class F implements SkillBase {
         Location baseLoc = targetBlock.getLocation().add(0, 1, 0);
         config.treeLoc.put(player.getUniqueId(), baseLoc);
 
-        Set<Location> beforeBlocks = getNearbyNonAirBlocks(baseLoc, 8);
+        // 벚나무는 생성 시 꽃잎이 반경 넓게 퍼지므로 범위를 9로 설정
+        Set<Location> beforeBlocks = getNearbyNonAirBlocks(baseLoc, 9);
 
-        if (!world.generateTree(baseLoc, TreeType.CHERRY)) {
-            targetBlock.setBlockData(originalData);
-            cool.updateCooldown(player, "F", 500L);
-            return;
+        java.util.Random random = new java.util.Random();
+        boolean generated = false;
+
+        // API의 벚나무 시스템 생성을 우선 시도
+        for (int i = 0; i < 10; i++) {
+            if (world.generateTree(baseLoc, random, TreeType.CHERRY)) {
+                generated = true;
+                break;
+            }
         }
 
-        Set<Location> afterBlocks = getNearbyNonAirBlocks(baseLoc, 8);
+        // [비파괴적 수동 스폰] 시스템 생성이 막힌 경우, 벽을 파괴하지 않고 빈 공간에만 벚나무 생성
+        if (!generated) {
+            int treeHeight = 5;
+            for (int y = 0; y < treeHeight; y++) {
+                Block b = baseLoc.clone().add(0, y, 0).getBlock();
+                if (!b.getType().isSolid() || b.getType().name().endsWith("LEAVES")) {
+                    b.setType(Material.CHERRY_LOG);
+                }
+            }
+
+            for (int y = 2; y <= treeHeight + 1; y++) {
+                int radius = (y <= 4) ? 3 : (y == 5 ? 2 : 1);
+
+                for (int x = -radius; x <= radius; x++) {
+                    for (int z = -radius; z <= radius; z++) {
+                        if (x == 0 && z == 0 && y < treeHeight) continue;
+                        if (Math.abs(x) == radius && Math.abs(z) == radius && radius > 1) {
+                            if (random.nextBoolean()) continue;
+                        }
+
+                        Block b = baseLoc.clone().add(x, y, z).getBlock();
+                        if (!b.getType().isSolid()) {
+                            b.setType(Material.CHERRY_LEAVES);
+                        }
+                    }
+                }
+            }
+        }
+
+        Set<Location> afterBlocks = getNearbyNonAirBlocks(baseLoc, 9);
         afterBlocks.removeAll(beforeBlocks);
+
+        for (Location loc : afterBlocks) {
+            Block block = loc.getBlock();
+            if (block.getBlockData() instanceof Leaves leaves) {
+                leaves.setPersistent(true);
+                block.setBlockData(leaves);
+            }
+        }
 
         world.playSound(baseLoc, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.4f, 1);
         world.playSound(baseLoc, Sound.BLOCK_GRASS_PLACE, 1.4f, 1);
@@ -137,17 +181,14 @@ public class F implements SkillBase {
                 for (Entity entity : treeCenter.getWorld().getNearbyEntities(treeCenter, radius, radius, radius)) {
 
                     if (entity instanceof Player p && p.equals(owner)) {
-
                         p.addPotionEffect(PotionEffectType.REGENERATION.createEffect(40, 2));
                         p.addPotionEffect(PotionEffectType.RESISTANCE.createEffect(40, 1));
                         p.getWorld().spawnParticle(Particle.HEART, p.getLocation().add(0, 1.4, 0), 3, 0.5, 0.5, 0.5, 0.01);
                         p.getWorld().spawnParticle(Particle.CHERRY_LEAVES, p.getLocation().add(0, 1.5, 0), 7, 0.8, 0.8, 0.8, 0.1);
-
                         continue;
                     }
 
                     if (entity instanceof LivingEntity target && !target.equals(owner)) {
-
                         Particle.DustOptions pinkDust = new Particle.DustOptions(Color.fromRGB(255, 175, 185), 1.1f);
 
                         world.spawnParticle(Particle.DUST, target.getLocation().add(0, 1.4, 0), 17, 0.5, 0.5, 0.5, pinkDust);
@@ -170,9 +211,10 @@ public class F implements SkillBase {
             Block block = loc.getBlock();
             Material type = block.getType();
 
-            if (type == Material.CHERRY_LOG ||
-                    type == Material.CHERRY_LEAVES ||
-                    type == Material.CHERRY_SAPLING) {
+            if (type.name().contains("CHERRY") ||
+                    type == Material.PINK_PETALS ||
+                    type == Material.BEE_NEST) {
+
                 block.setType(Material.AIR, false);
             }
         }

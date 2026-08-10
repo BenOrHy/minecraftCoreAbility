@@ -17,30 +17,33 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
 import org.core.coreSystem.cores.KEY.PLAYER.coreSystem.playerLeveling;
-import org.core.coreSystem.cores.VOL2.Undead.coreSystem.undeadLeveling;
-import org.core.coreSystem.cores.VOL3.Charlotte.coreSystem.charLeveling;
-import org.core.coreSystem.cores.VOL3.Darmes.coreSystem.darmesLeveling;
-import org.core.coreSystem.cores.VOL3.Jester.coreSystem.jestLeveling;
-import org.core.coreSystem.cores.VOL3.Lavender.coreSystem.lavLeveling;
-import org.core.coreSystem.cores.VOL2.Rose.coreSystem.roseLeveling;
-import org.core.coreSystem.cores.VOL3.Residue.coreSystem.residueLeveling;
+import org.core.coreSystem.cores.VOL2.Cheshire.coreSystem.chesLeveling;
+import org.core.coreSystem.cores.VOL5.Scout.coreSystem.sctLeveling;
+import org.core.coreSystem.cores.VOL2.Stroke.coreSystem.strLeveling;
+import org.core.coreSystem.cores.VOL4.Undead.coreSystem.undeadLeveling;
+import org.core.coreSystem.cores.VOL6.Charlotte.coreSystem.charLeveling;
+import org.core.coreSystem.cores.VOL6.Darmes.coreSystem.darmesLeveling;
+import org.core.coreSystem.cores.VOL6.Jester.coreSystem.jestLeveling;
+import org.core.coreSystem.cores.VOL6.Lavender.coreSystem.lavLeveling;
+import org.core.coreSystem.cores.VOL3.Rose.coreSystem.roseLeveling;
+import org.core.coreSystem.cores.VOL6.Residue.coreSystem.residueLeveling;
 import org.core.main.coreConfig;
 import org.core.coreSystem.cores.VOL1.Bamboo.coreSystem.bambLeveling;
 import org.core.coreSystem.cores.KEY.Benzene.coreSystem.benzLeveling;
-import org.core.coreSystem.cores.VOL1.Blaze.coreSystem.blazeLeveling;
+import org.core.coreSystem.cores.VOL5.Blaze.coreSystem.blazeLeveling;
 import org.core.coreSystem.cores.VOL1.Blossom.coreSystem.blossLeveling;
-import org.core.coreSystem.cores.VOL2.Blue.coreSystem.blueLeveling;
-import org.core.coreSystem.cores.VOL3.Carpenter.coreSystem.carpLeveling;
+import org.core.coreSystem.cores.VOL5.Blue.coreSystem.blueLeveling;
+import org.core.coreSystem.cores.VOL6.Carpenter.coreSystem.carpLeveling;
 import org.core.coreSystem.cores.VOL1.Commander.coreSystem.comLeveling;
 import org.core.coreSystem.cores.VOL1.Dagger.coreSystem.dagLeveling;
 import org.core.coreSystem.cores.VOL1.Glacier.coreSystem.glaLeveling;
 import org.core.coreSystem.cores.VOL1.Harvester.coreSystem.harvLeveling;
-import org.core.coreSystem.cores.VOL3.Knight.coreSystem.knightLeveling;
-import org.core.coreSystem.cores.VOL3.Luster.coreSystem.lustLeveling;
+import org.core.coreSystem.cores.VOL6.Knight.coreSystem.knightLeveling;
+import org.core.coreSystem.cores.VOL6.Luster.coreSystem.lustLeveling;
 import org.core.coreSystem.cores.KEY.Nightel.coreSystem.nightLeveling;
 import org.core.coreSystem.cores.VOL1.Pyro.coreSystem.pyroLeveling;
 import org.core.coreSystem.cores.VOL1.Saboteur.coreSystem.sabLeveling;
-import org.core.coreSystem.cores.VOL3.Swordsman.coreSystem.swordLeveling;
+import org.core.coreSystem.cores.VOL6.Swordsman.coreSystem.swordLeveling;
 import org.core.coreSystem.cores.VOL2.Burst.coreSystem.burstLeveling;
 import org.core.playerSettings.persistentPlayerHashMap;
 
@@ -87,7 +90,7 @@ public class LevelingManager implements Listener {
 
         AttributeInstance maxHealth = player.getAttribute(Attribute.MAX_HEALTH);
         if (maxHealth != null) {
-            double base = maxHealth.getDefaultValue();
+            double base = Attribute.MAX_HEALTH.getDefaultValue();
             double newMax = base + (4.0 * level);
 
             maxHealth.setBaseValue(newMax);
@@ -202,6 +205,15 @@ public class LevelingManager implements Listener {
                 case "JESTER":
                     jestLeveling jester = new jestLeveling(plugin, player, exp);
                     jester.addExp(player);
+                case "CHESHIRE":
+                    chesLeveling cheshire = new chesLeveling(plugin, player, exp);
+                    cheshire.addExp(player);
+                case "STROKE":
+                    strLeveling stroke = new strLeveling(plugin, player, exp);
+                    stroke.addExp(player);
+                case "SCOUT":
+                    sctLeveling scout = new sctLeveling(plugin, player, exp);
+                    scout.addExp(player);
                 default :
                     break;
             }
